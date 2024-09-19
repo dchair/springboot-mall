@@ -31,14 +31,8 @@ public class ProductDaoImpl implements ProductDao {
         Map<String,Object> map =new HashMap<>();
 
         //查詢條件
-        if(productQueryParams.getCategory() != null){
-            sql = sql + " AND category = :category";
-            map.put("category",productQueryParams.getCategory().name());
-        }
-        if(productQueryParams.getSearch() != null){
-            sql = sql + " AND product_name LIKE :search";
-            map.put("search","%"+ productQueryParams.getSearch() +"%");
-        }
+        sql =addFilteringSql(sql,map,productQueryParams);
+
         Integer total = namedParameterJdbcTemplate.queryForObject(sql,map,Integer.class);
 
         return total;
@@ -51,15 +45,7 @@ public class ProductDaoImpl implements ProductDao {
 
         Map<String,Object> map =new HashMap<>();
 
-        //查詢條件
-        if(productQueryParams.getCategory() != null){
-            sql = sql + " AND category = :category";
-            map.put("category",productQueryParams.getCategory().name());
-        }
-        if(productQueryParams.getSearch() != null){
-            sql = sql + " AND product_name LIKE :search";
-            map.put("search","%"+ productQueryParams.getSearch() +"%");
-        }
+        sql =addFilteringSql(sql,map,productQueryParams);
 
         //注意sql的語法之間要穿插space 否則會容易有語法相連的問題
         //排序
@@ -149,5 +135,17 @@ public class ProductDaoImpl implements ProductDao {
         map.put("productId",productId);
 
         namedParameterJdbcTemplate.update(sql,map);
+    }
+    private String addFilteringSql(String sql,Map<String,Object>map,ProductQueryParams productQueryParams){
+
+        if(productQueryParams.getCategory() != null){
+            sql = sql + " AND category = :category";
+            map.put("category",productQueryParams.getCategory().name());
+        }
+        if(productQueryParams.getSearch() != null){
+            sql = sql + " AND product_name LIKE :search";
+            map.put("search","%"+ productQueryParams.getSearch() +"%");
+        }
+        return sql;
     }
 }
