@@ -1,12 +1,19 @@
 package com.chair.springboot_mall.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 public class User {
 
     private Integer id;
     private String email;
+
+    //在轉換JSON格式的時候會去忽略這個值
+    @JsonIgnore
     private String password;
+
     private Date createdDate;
     private Date modifiedDate;
 
