@@ -3,6 +3,7 @@ package com.chair.springboot_mall.dao.impl;
 import com.chair.springboot_mall.dao.UserDao;
 import com.chair.springboot_mall.dto.UserRegisterRequest;
 import com.chair.springboot_mall.model.User;
+import com.chair.springboot_mall.rowmapper.UserRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -38,8 +39,6 @@ public class UserDaoImpl implements UserDao {
         }else {
             return null;
         }
-
-        return null;
     }
 
     @Override

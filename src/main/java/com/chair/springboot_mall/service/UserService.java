@@ -6,5 +6,5 @@ import com.chair.springboot_mall.model.User;
 public interface UserService {
 
     Integer register(UserRegisterRequest userRegisterRequest);
-    User getUserId(Integer userId);
+    User getUserById(Integer userId);
 }
