@@ -1,13 +1,12 @@
 package com.chair.springboot_mall.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
 public class User {
 
-    private Integer id;
+    private Integer userId;
     private String email;
 
     //在轉換JSON格式的時候會去忽略這個值
@@ -15,14 +14,14 @@ public class User {
     private String password;
 
     private Date createdDate;
-    private Date modifiedDate;
+    private Date lastModifiedDate;
 
-    public Integer getId() {
-        return id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getEmail() {
@@ -49,11 +48,11 @@ public class User {
         this.createdDate = createdDate;
     }
 
-    public Date getModifiedDate() {
-        return modifiedDate;
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
-    public void setModifiedDate(Date modifiedDate) {
-        this.modifiedDate = modifiedDate;
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }
