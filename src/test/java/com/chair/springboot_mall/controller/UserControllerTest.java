@@ -37,7 +37,7 @@ class UserControllerTest {
 
     //註冊帳號
     @Test
-    public void register_user() throws Exception{
+    public void register_success() throws Exception{
         UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
         userRegisterRequest.setEmail("test1@gmail.com");
         userRegisterRequest.setPassword("123");
@@ -63,7 +63,7 @@ class UserControllerTest {
 
     //帳號格式問題
     @Test
-    public void register_invalid_emailFormat()throws Exception{
+    public void register_invalidEmailFormat()throws Exception{
         UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
         userRegisterRequest.setEmail("3gd8e7q34l9");
         userRegisterRequest.setPassword("123");
@@ -104,6 +104,7 @@ class UserControllerTest {
 
     }
 
+    //登入
     @Test
     public void login_success() throws Exception{
         UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
@@ -122,11 +123,78 @@ class UserControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/users/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.userId",notNullValue()))
+                .andExpect(jsonPath("$.email",equalTo(userRegisterRequest.getEmail())))
+                .andExpect(jsonPath("$.createdDate",notNullValue()))
+                .andExpect(jsonPath("$.lastModifiedDate",notNullValue()));
+    }
+
+    @Test
+    public void login_wrongPassword() throws Exception{
+        //先註冊新帳號
+        UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
+        userRegisterRequest.setEmail("test4@gmail.com");
+        userRegisterRequest.setPassword("123");
+
+        register(userRegisterRequest);
+
+        //測試錯誤密碼登入狀況
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setEmail(userRegisterRequest.getEmail());
+        userLoginRequest.setPassword("unknown");
+
+        String json = objectMapper.writeValueAsString(userLoginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    public void login_invalidEmailFormat()throws Exception{
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setEmail("3gd8e7q34l9");
+        userLoginRequest.setPassword("123");
+
+        String json = objectMapper.writeValueAsString(userLoginRequest);
+
+        RequestBuilder requestBuilder =MockMvcRequestBuilders
+                .post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
 
     }
 
+    @Test
+    public void login_emailNotExist() throws Exception{
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setEmail("unknown@gmail.com");
+        userLoginRequest.setPassword("123");
+
+        String json = objectMapper.writeValueAsString(userLoginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
+    }
+
     //創建一個註冊程式，簡化流程
+
     private void register(UserRegisterRequest userRegisterRequest) throws Exception{
         String json = objectMapper.writeValueAsString(userRegisterRequest);
 
