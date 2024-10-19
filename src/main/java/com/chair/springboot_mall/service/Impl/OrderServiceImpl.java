@@ -4,6 +4,7 @@ import com.chair.springboot_mall.dao.OrderDao;
 import com.chair.springboot_mall.dao.ProductDao;
 import com.chair.springboot_mall.dto.BuyItem;
 import com.chair.springboot_mall.dto.CreateOrderRequest;
+import com.chair.springboot_mall.model.Order;
 import com.chair.springboot_mall.model.OrderItem;
 import com.chair.springboot_mall.model.Product;
 import com.chair.springboot_mall.service.OrderService;
@@ -21,6 +22,18 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
     @Autowired
     private ProductDao productDao;
+
+    @Override
+    public Order getOrderById(Integer orderId) {
+
+        Order order = orderDao.getOrderById(orderId);
+
+        List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(orderId);
+
+        order.setOrderItemList(orderItemList);
+
+        return order;
+    }
 
     //只要同時需要注入兩個table就要記得使用Transactional 以免資料不對稱
     @Transactional
