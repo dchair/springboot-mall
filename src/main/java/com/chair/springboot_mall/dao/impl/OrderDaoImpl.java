@@ -47,29 +47,37 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public void createOrderItems(Integer orderId, List<OrderItem> orderItemList) {
 
-        //使用 for loop 一條一條sql 加入數據，效率較低
-        for(OrderItem orderItem : orderItemList) {
-
-            String sql ="INSERT INTO order_item(order_id,product_id, quantity ,amount )"+
-                    "VALUES(:orderId, :productId, :quantity, :amount)";
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("orderId", orderId);
-            map.put("productId",orderItem.getProductId());
-            map.put("quantity",orderItem.getQuantity());
-            map.put("amount",orderItem.getAmount());
-
-            namedParameterJdbcTemplate.update(sql, map);
-        }
+//        使用 for loop 一條一條sql 加入數據，效率較低
+//        for(OrderItem orderItem : orderItemList) {
+//
+//            String sql ="INSERT INTO order_item(order_id,product_id, quantity ,amount )"+
+//                    "VALUES(:orderId, :productId, :quantity, :amount)";
+//
+//            Map<String, Object> map = new HashMap<>();
+//            map.put("orderId", orderId);
+//            map.put("productId",orderItem.getProductId());
+//            map.put("quantity",orderItem.getQuantity());
+//            map.put("amount",orderItem.getAmount());
+//
+//            namedParameterJdbcTemplate.update(sql, map);
+//        }
         String sql = "INSERT INTO order_item(order_id,product_id,quantity,amount)"+
                 "VALUES(:orderId, :productId, :quantity, :amount)";
 
         MapSqlParameterSource[] parameterSources = new MapSqlParameterSource[orderItemList.size()];
 
         for(int i=0 ; i<orderItemList.size(); i++) {
-            
+            OrderItem orderItem = orderItemList.get(i);
+
+            parameterSources[i]= new MapSqlParameterSource();
+            parameterSources[i].addValue("orderId",orderId);
+            parameterSources[i].addValue("productId",orderItem.getProductId());
+            parameterSources[i].addValue("quantity",orderItem.getQuantity());
+            parameterSources[i].addValue("amount",orderItem.getAmount());
+
         }
 
+        namedParameterJdbcTemplate.batchUpdate(sql, parameterSources);
 
     }
 }

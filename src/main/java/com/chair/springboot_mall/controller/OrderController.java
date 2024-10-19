@@ -3,6 +3,7 @@ package com.chair.springboot_mall.controller;
 import com.chair.springboot_mall.dto.CreateOrderRequest;
 import com.chair.springboot_mall.service.OrderService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OrderController {
 
+    @Autowired
     private OrderService orderService;
 
     @PostMapping("/users/{userId}/orders")
