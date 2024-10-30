@@ -4,6 +4,7 @@ import com.chair.springboot_mall.dto.CreateOrderRequest;
 import com.chair.springboot_mall.dto.OrderQueryParams;
 import com.chair.springboot_mall.model.Order;
 import com.chair.springboot_mall.service.OrderService;
+import com.chair.springboot_mall.util.Page;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -31,7 +32,8 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
-    public ResponseEntity<?>getOrders(
+    @GetMapping("/users/{userId}/orders")
+    public ResponseEntity<Page<Order>>getOrders(
             @PathVariable Integer userId,
             @RequestParam(defaultValue = "10") @Max(1000) @Min(0)Integer limit,
             @RequestParam(defaultValue = "0") @Min(0) Integer offset
@@ -43,6 +45,17 @@ public class OrderController {
 
         //取得 order list
         List<Order> orderList = orderService.getOrders(orderQueryParams);
+
+        //取得總數
+        Integer count =orderService.countOrder(orderQueryParams);
+
+        Page<Order> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(count);
+        page.setResults(orderList);
+
+        return  ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
 }

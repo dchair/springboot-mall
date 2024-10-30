@@ -45,13 +45,13 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getOrders(OrderQueryParams orderQueryParams) {
         List<Order> orderList = orderDao.getOrders(orderQueryParams);
 
-        for(Order order :orderList){
+        for(Order order : orderList){
             List<OrderItem> orderItemList =orderDao.getOrderItemsByOrderId(order.getOrderId());
 
             order.setOrderItemList(orderItemList);
 
-            return orderList;
         }
+        return orderList;
     }
 
     @Override
