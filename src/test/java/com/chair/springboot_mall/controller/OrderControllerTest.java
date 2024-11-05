@@ -30,8 +30,7 @@ class OrderControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private DefaultMockMvcBuilder mockMvcBuilder;
+
 
     //創建訂單
     @Test
@@ -51,9 +50,11 @@ class OrderControllerTest {
         buyItemsList.add(buyItem2);
 
         createOrderRequest.setBuyItemList(buyItemsList);
+
         String json = objectMapper.writeValueAsString(createOrderRequest);
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/users/{userId}/orders}",1)
+                .post("/users/{userId}/orders",1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json);
 
@@ -159,7 +160,7 @@ class OrderControllerTest {
 
     //查詢訂單列表
     @Test
-    public void getOrder() throws Exception{
+    public void getOrders() throws Exception{
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/users/{userId}/orders",1);
 
@@ -181,8 +182,47 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.results[1].orderItemList",hasSize(3)))
                 .andExpect(jsonPath("$.results[1].createdDate",notNullValue()))
                 .andExpect(jsonPath("$.results[1].lastModifiedDate",notNullValue()));
-
     }
 
+    @Test
+    public void getOrders_pagination() throws Exception{
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/users/{userId}/orders",1)
+                .param("limit","2")
+                .param("offset","2");
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("limit",notNullValue()))
+                .andExpect(jsonPath("offset",notNullValue()))
+                .andExpect(jsonPath("total",notNullValue()))
+                .andExpect(jsonPath("results",hasSize(0)));
+    }
+
+    @Test
+    public void getOrders_userHasNoOrder() throws Exception{
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/users/{userId}/orders",2);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("limit",notNullValue()))
+                .andExpect(jsonPath("offset",notNullValue()))
+                .andExpect(jsonPath("total",notNullValue()))
+                .andExpect(jsonPath("results",hasSize(0)));
+    }
+
+    @Test
+    public void getOrders_userHasNotExit() throws Exception{
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/users/{userId}/orders",100);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("limit",notNullValue()))
+                .andExpect(jsonPath("offset",notNullValue()))
+                .andExpect(jsonPath("total",notNullValue()))
+                .andExpect(jsonPath("results",hasSize(0)));
+    }
 
 }
