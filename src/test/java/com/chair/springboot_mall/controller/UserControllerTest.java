@@ -32,8 +32,7 @@ class UserControllerTest {
     private UserDao userDao;
 
     private ObjectMapper objectMapper = new ObjectMapper();
-    @Autowired
-    private DefaultMockMvcBuilder mockMvcBuilder;
+
 
     //註冊帳號
     @Test
